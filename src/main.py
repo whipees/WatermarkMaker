@@ -16,13 +16,13 @@ def ensure_directories():
         if not os.path.exists(folder):
             try:
                 os.makedirs(folder)
-                logger.log_msg("SYSTEM", f"Folder created: {os.path.basename(folder)}")
+                logger.logger("SYSTEM", f"Folder created: {os.path.basename(folder)}")
             except OSError as e:
-                logger.log_msg("SYSTEM", f"Error while creating folder: {folder}: {e}")
+                logger.logger("SYSTEM", f"Error while creating folder: {folder}: {e}")
 
     if not os.path.exists(config.WATERMARK_FILE):
-        logger.log_msg("SYSTEM", f"!!! There is a file missing'{os.path.basename(config.WATERMARK_FILE)}' !!!")
-        logger.log_msg("SYSTEM", "Insert watermark image into the folder")
+        logger.logger("SYSTEM", f"!!! There is a file missing'{os.path.basename(config.WATERMARK_FILE)}' !!!")
+        logger.logger("SYSTEM", "Insert watermark image into the folder")
 
 
 def run_app():
@@ -40,8 +40,8 @@ def run_app():
 
     all_threads = [producer_thread] + worker_threads
 
-    logger.log_msg("SYSTEM", f"app started with {config.NUM_WORKERS} workers")
-    logger.log_msg("SYSTEM", "watching images")
+    logger.logger("SYSTEM", f"app started with {config.NUM_WORKERS} workers")
+    logger.logger("SYSTEM", "watching images")
 
 
     try:
@@ -51,11 +51,11 @@ def run_app():
         print()
         pass
 
-    logger.log_msg("SYSTEM", "Stopping all threads...")
+    logger.logger("SYSTEM", "Stopping all threads...")
 
     workers.stop_threads()
 
     for t in all_threads:
         t.join()
 
-    logger.log_msg("SYSTEM", "all threads stopped, goodbye")
+    logger.logger("SYSTEM", "all threads stopped, goodbye")

@@ -26,11 +26,11 @@ def producer():
                 if os.path.isfile(full_path):
                     if file.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                         task_queue.put((full_path, file))
-                        logger.log_msg("PRODUCER", f"Added to queue: {file}")
+                        logger.logger("PRODUCER", f"Added to queue: {file}")
 
             time.sleep(1)
         except Exception as e:
-            logger.log_msg("PRODUCER", f"Error: {e}")
+            logger.logger("PRODUCER", f"Error: {e}")
 
 def worker(worker_id):
     name = f"Worker {worker_id}"
