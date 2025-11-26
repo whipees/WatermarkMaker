@@ -34,7 +34,7 @@ def producer():
 
 def worker(worker_id):
     name = f"Worker {worker_id}"
-    logger.logger(name, "Starting worker {worker_id}")
+    logger.logger(name, f"Starting worker {worker_id}")
 
     while running:
         try:
