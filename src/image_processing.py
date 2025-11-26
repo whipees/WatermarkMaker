@@ -1,6 +1,5 @@
 import os
 from PIL import Image, UnidentifiedImageError
-from src import logger
 
 def apply_watermark(filepath, watermark_path,output_folder,filename):
     try:
