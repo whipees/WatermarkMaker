@@ -4,7 +4,10 @@ from src import config, workers, logger
 
 
 def ensure_directories():
-
+    """
+    Checks if necessary directories exist and creates them if they are missing
+    Also verifies the existence of the watermark file
+    """
     folders = [
         config.INPUT_FOLDER,
         config.OUTPUT_FOLDER,
@@ -26,7 +29,10 @@ def ensure_directories():
 
 
 def run_app():
-
+    """
+    Initializes the application, starts the producer and worker threads,
+    and handles the main loop
+    """
     ensure_directories()
 
     producer_thread = threading.Thread(target=workers.producer)

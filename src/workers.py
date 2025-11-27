@@ -8,10 +8,17 @@ task_queue = queue.Queue()
 running = True
 
 def stop_threads():
+    """
+    Sets the global running flag to False to signal all threads to stop
+    """
     global running
     running = False
 
 def producer():
+    """
+    scans the input folder for new images and adds them to the task queue
+    Runs as a separate thread
+    """
     logger.logger("Producer","Scanning the folder")
 
     while running:
@@ -33,6 +40,11 @@ def producer():
             logger.logger("PRODUCER", f"Error: {e}")
 
 def worker(worker_id):
+    """
+    Retrieves image tasks from the queue, applies the watermark, and handles file movements
+    Runs as a separate thread
+    :param worker_id: The identifier of the worker thread
+    """
     name = f"Worker {worker_id}"
     logger.logger(name, f"Starting worker {worker_id}")
 
