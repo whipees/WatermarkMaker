@@ -1,7 +1,7 @@
 import os
 from PIL import Image, UnidentifiedImageError
 
-def apply_watermark(filepath, watermark_path,output_folder,filename):
+def apply_watermark(filepath, watermark_path, output_folder, filename):
     try:
         base_image = Image.open(filepath).convert("RGBA")
         watermark = Image.open(watermark_path).convert("RGBA")
@@ -19,7 +19,7 @@ def apply_watermark(filepath, watermark_path,output_folder,filename):
         watermark.close()
         return True
     except UnidentifiedImageError:
-        raise UnidentifiedImageError("not a valid image")
+        raise ValueError("not a valid image")
     except FileNotFoundError:
         raise FileNotFoundError("watermark not found")
 
