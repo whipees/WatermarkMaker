@@ -140,7 +140,7 @@ Stored in `src/config.py`.
 pip install Pillow
 ```
 
-Ensure `watermark.png` exists in the root folder.
+Ensure `watermark.png` exists in the root folder
 
 ### Run Application
 
@@ -148,7 +148,7 @@ Ensure `watermark.png` exists in the root folder.
 python start.py
 ```
 
-Folders will be created automatically.
+Folders will be created automatically
 
 ---
 
