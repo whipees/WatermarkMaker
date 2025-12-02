@@ -132,7 +132,7 @@ Stored in `src/config.py`.
 
 ### Requirements
 
--   Python 3.5+
+-   Python 3.8+
 -   `pip`
 
 ### Installation Steps
