@@ -33,6 +33,7 @@ large volumes of files.
     -   Move corrupted/invalid files to `error_files`
 -   **Logging:** All actions logged to console with thread
     identification
+-  **Smart Scaling** Images scales depending on the size of an image
 
 ### Non-Functional Requirements
 
@@ -200,7 +201,7 @@ Expected output:\
 
 -   **Watermark positioning:** Fixed offset; small images may show
     imperfect results\
--   **Scaling:** Watermark does not auto-scale yet
+
 
 ------------------------------------------------------------------------
 
