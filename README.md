@@ -148,7 +148,7 @@ Ensure `watermark.png` exists in the root folder
 ``` bash
 python start.py
 ```
-
+Don't forget to be in .\bin directory\
 Folders will be created automatically
 
 ---
