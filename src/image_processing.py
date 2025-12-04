@@ -15,6 +15,10 @@ def apply_watermark(filepath, watermark_path, output_folder, filename):
         base_image = Image.open(filepath).convert("RGBA")
         watermark = Image.open(watermark_path).convert("RGBA")
 
+        alpha = watermark.split()[3]
+        alpha = alpha.point(lambda p: p * config.WATERMARK_OPACITY)
+        watermark.putalpha(alpha)
+
         target_width = int(base_image.width * config.WATERMARK_SCALE_RATIO)
         if watermark.width > target_width:
             ratio = target_width / float(watermark.width)
