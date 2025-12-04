@@ -199,8 +199,7 @@ Expected output:\
 
 ### Known Issues
 
--   **Watermark positioning:** Fixed offset; small images may show
-    imperfect results\
+-   **Strange console output:** The console successfully completes all images, but then shows errors on images which were already processed
 
 
 ------------------------------------------------------------------------
