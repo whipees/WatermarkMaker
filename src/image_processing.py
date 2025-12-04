@@ -22,8 +22,10 @@ def apply_watermark(filepath, watermark_path, output_folder, filename):
 
             watermark = watermark.resize((target_width, new_height), Image.Resampling.LANCZOS)
 
-        x = base_image.width - watermark.width - config.PADDING
-        y = base_image.height - watermark.height - config.PADDING
+        padding = int(base_image.width * config.PADDING_RATIO)
+
+        x = base_image.width - watermark.width - padding
+        y = base_image.height - watermark.height - padding
 
         x = max(0, x)
         y = max(0, y)
