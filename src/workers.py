@@ -1,11 +1,12 @@
 import time
 import os
 import queue
-from src import config,logger,image_processing
+from src import config, logger, image_processing
 import shutil
 
 task_queue = queue.Queue()
 running = True
+
 
 def stop_threads():
     """
@@ -14,12 +15,15 @@ def stop_threads():
     global running
     running = False
 
+
 def producer():
     """
-    scans the input folder for new images and adds them to the task queue
-    Runs as a separate thread
+    scans the input folder for new images and adds them to the task queue.
+    Uses a set to track already queued files to prevent duplicates.
     """
-    logger.logger("Producer","Scanning the folder")
+    logger.logger("Producer", "Scanning the folder")
+
+    sent_files = set()
 
     while running:
         try:
@@ -32,35 +36,47 @@ def producer():
                 full_path = os.path.join(config.INPUT_FOLDER, file)
                 if os.path.isfile(full_path):
                     if file.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                        task_queue.put((full_path, file))
-                        logger.logger("PRODUCER", f"Added to queue: {file}")
+
+                        if full_path not in sent_files:
+                            task_queue.put((full_path, file))
+                            sent_files.add(full_path)  # ...tak si ho poznamenáme
+                            logger.logger("PRODUCER", f"Added to queue: {file}")
+
+
 
             time.sleep(1)
         except Exception as e:
             logger.logger("PRODUCER", f"Error: {e}")
 
+
 def worker(worker_id):
     """
     Retrieves image tasks from the queue, applies the watermark, and handles file movements
     Runs as a separate thread
-    :param worker_id: The identifier of the worker thread
     """
     name = f"Worker {worker_id}"
     logger.logger(name, f"Starting worker {worker_id}")
 
     while running:
         try:
-            filepath,filename = task_queue.get(timeout=1)
+            filepath, filename = task_queue.get(timeout=1)
+
+
             if os.path.exists(filepath):
                 try:
-                    image_processing.apply_watermark(filepath,config.WATERMARK_FILE,config.OUTPUT_FOLDER,filename)
+                    image_processing.apply_watermark(filepath, config.WATERMARK_FILE, config.OUTPUT_FOLDER, filename)
                     logger.logger(name, "WATERMARK PROCESSED")
-                    shutil.move(filepath,os.path.join(config.PROCESSED_FOLDER,filename))
+
+                    shutil.move(filepath, os.path.join(config.PROCESSED_FOLDER, filename))
+
                 except Exception as e:
                     logger.logger(name, f"error: {e}")
                     if os.path.exists(filepath):
                         shutil.move(filepath, os.path.join(config.ERROR_FOLDER, filename))
+            else:
+                logger.logger(name, f"File missing (already processed?): {filename}")
 
             task_queue.task_done()
+
         except queue.Empty:
             continue
