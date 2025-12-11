@@ -188,7 +188,7 @@ Tests using `unittest`.
 Expected output:\
 **Ran 3 tests --- OK**
 
-------------------------------------------------------------------------
+--
 
 ## 10. Versions and Known Bugs
 
@@ -202,7 +202,7 @@ Expected output:\
 -   **Strange console output:** The console successfully completes all images, but then shows errors on images which were already processed
 
 
-------------------------------------------------------------------------
+--
 
 ## 11. Specifics (Data, Import/Export)
 
@@ -225,6 +225,9 @@ Expected output:\
 -   No database\
 -   No network usage
 
-------------------------------------------------------------------------
-
+--
+## 12. diagrams
+![diagram](diagrams.png)\
+![diagram](diagrams2.png)\
+![diagram](diagrams3.png)
 
