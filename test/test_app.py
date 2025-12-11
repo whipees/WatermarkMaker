@@ -126,5 +126,29 @@ class TestConfiguration(unittest.TestCase):
         except Exception as e:
             self.fail(f"Wrong error: {e}")
 
+    def test_scaling_logic(self):
+        """
+            Testing smart scaling logic, creates big watermark for small image
+        """
+        filename = "tiny_image.jpg"
+        filepath = os.path.join(self.fake_input, filename)
+        Image.new('RGB', (50, 50)).save(filepath)
+
+        huge_watermark_path = os.path.join(self.test_dir, "huge_wm.png")
+        Image.new('RGBA', (500, 500)).save(huge_watermark_path)
+
+        try:
+            image_processing.apply_watermark(
+                filepath,
+                huge_watermark_path,
+                self.fake_output,
+                filename
+            )
+        except Exception as e:
+            self.fail(f"scaling error: {e}")
+        finally:
+            if os.path.exists(huge_watermark_path):
+                os.remove(huge_watermark_path)
+
 if __name__ == '__main__':
     unittest.main()
