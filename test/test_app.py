@@ -74,11 +74,11 @@ class TestConfiguration(unittest.TestCase):
             )
             self.assertTrue(result)
         except Exception as e:
-            self.fail(f"Zpracování validního obrázku selhalo s chybou: {e}")
+            self.fail(f"There has been an error while proccessing your img: {e}")
 
         expected_output = os.path.join(self.fake_output, f"watermarked_{filename}")
 
-        self.assertTrue(os.path.exists(expected_output), "Výstupní soubor nebyl vytvořen!")
+        self.assertTrue(os.path.exists(expected_output), "no output folder")
 
     def test_corrupt_file_handling(self):
         """
@@ -88,7 +88,7 @@ class TestConfiguration(unittest.TestCase):
         bad_filepath = os.path.join(self.fake_input, bad_filename)
 
         with open(bad_filepath, "w") as f:
-            f.write("Toto není obrázek.")
+            f.write("this is not an image")
 
         try:
             image_processing.apply_watermark(
@@ -97,12 +97,34 @@ class TestConfiguration(unittest.TestCase):
                 self.fake_output,
                 bad_filename
             )
-            self.fail("Měla nastat chyba ValueError!")
+            self.fail("should've been ValueError")
         except ValueError:
             shutil.move(bad_filepath, os.path.join(self.fake_error, bad_filename))
 
         self.assertTrue(os.path.exists(os.path.join(self.fake_error, bad_filename)))
 
+    def test_missing_watermark_file(self):
+        """
+        Testing missing watermark
+        """
+        non_existent_watermark = os.path.join(self.test_dir, "ghost.png")
+
+        filename = "test_img.jpg"
+        filepath = os.path.join(self.fake_input, filename)
+        Image.new('RGB', (100, 100)).save(filepath)
+
+        try:
+            image_processing.apply_watermark(
+                filepath,
+                non_existent_watermark,
+                self.fake_output,
+                filename
+            )
+            self.fail("Should've been FileNotFoundError")
+        except FileNotFoundError:
+            pass
+        except Exception as e:
+            self.fail(f"Wrong error: {e}")
 
 if __name__ == '__main__':
     unittest.main()
