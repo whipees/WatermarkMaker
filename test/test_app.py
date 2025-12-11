@@ -80,6 +80,29 @@ class TestConfiguration(unittest.TestCase):
 
         self.assertTrue(os.path.exists(expected_output), "Výstupní soubor nebyl vytvořen!")
 
+    def test_corrupt_file_handling(self):
+        """
+        Testing corrupt file handling, string instead of img
+        """
+        bad_filename = "fake_image.jpg"
+        bad_filepath = os.path.join(self.fake_input, bad_filename)
+
+        with open(bad_filepath, "w") as f:
+            f.write("Toto není obrázek.")
+
+        try:
+            image_processing.apply_watermark(
+                bad_filepath,
+                self.fake_watermark,
+                self.fake_output,
+                bad_filename
+            )
+            self.fail("Měla nastat chyba ValueError!")
+        except ValueError:
+            shutil.move(bad_filepath, os.path.join(self.fake_error, bad_filename))
+
+        self.assertTrue(os.path.exists(os.path.join(self.fake_error, bad_filename)))
+
 
 if __name__ == '__main__':
     unittest.main()
