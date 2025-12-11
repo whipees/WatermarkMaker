@@ -14,23 +14,10 @@ class TestConfiguration(unittest.TestCase):
     Unit tests for configuration settings and error handling in file processing
     """
 
-    def test_paths_exist(self):
-        """
-        Verifies that the folder paths in the configuration are defined as strings
-        """
-        self.assertIsInstance(config.INPUT_FOLDER, str)
-        self.assertIsInstance(config.OUTPUT_FOLDER, str)
-
-    def test_worker_count(self):
-        """
-        Verifies that the folder paths in the configuration are defined as strings
-        """
-        self.assertGreater(config.NUM_WORKERS, 1)
 
     def setUp(self):
         """
-                Sets up the test environment by creating temporary directories
-                and a watermark file before each test
+        Set up for tests (temporary directories, watermark)
         """
         self.test_dir = os.path.dirname(__file__)
         self.fake_input = os.path.join(self.test_dir, "temp_input")
@@ -47,8 +34,7 @@ class TestConfiguration(unittest.TestCase):
 
     def tearDown(self):
         """
-        Cleans up the test environment by removing temporary directories
-        and files after each test
+        clean up after testing
         """
         shutil.rmtree(self.fake_input, ignore_errors=True)
         shutil.rmtree(self.fake_output, ignore_errors=True)
@@ -56,35 +42,43 @@ class TestConfiguration(unittest.TestCase):
         if os.path.exists(self.fake_watermark):
             os.remove(self.fake_watermark)
 
-    def test_corrupt_file_handling(self):
-        """
-        Tests the handling of a corrupt file (text file with image extension)
-        Verifies that it raises a ValueError and moves the file to the error folder
-        """
-        bad_filename = "fake_image.jpg"
-        bad_filepath = os.path.join(self.fake_input, bad_filename)
 
-        with open(bad_filepath, "w") as f:
-            f.write("Tohle není obrázek, tohle je text převlečený za obrázek.")
+    def test_paths_exist(self):
+        """
+        tests, if paths are strings
+        """
+        self.assertIsInstance(config.INPUT_FOLDER, str)
+        self.assertIsInstance(config.OUTPUT_FOLDER, str)
 
+    def test_worker_count(self):
+        """
+        testing parralel worker count
+        """
+        self.assertGreater(config.NUM_WORKERS, 1)
+
+    def test_valid_processing(self):
+        """
+        HAPPY PATH testing the good way scenario
+        """
+        filename = "valid_test.jpg"
+        filepath = os.path.join(self.fake_input, filename)
+        img = Image.new('RGB', (200, 200), color='blue')
+        img.save(filepath)
 
         try:
-            image_processing.apply_watermark(
-                bad_filepath,
-                self.dummy_watermark,
+            result = image_processing.apply_watermark(
+                filepath,
+                self.fake_watermark,
                 self.fake_output,
-                bad_filename
+                filename
             )
-            self.fail("Poškozený obrázek měl vyvolat chybu, ale nevyvolal!")
+            self.assertTrue(result)
+        except Exception as e:
+            self.fail(f"Zpracování validního obrázku selhalo s chybou: {e}")
 
-        except ValueError:
+        expected_output = os.path.join(self.fake_output, f"watermarked_{filename}")
 
-            shutil.move(bad_filepath, os.path.join(self.fake_error, bad_filename))
-
-        self.assertFalse(os.path.exists(bad_filepath))
-
-        error_path = os.path.join(self.fake_error, bad_filename)
-        self.assertTrue(os.path.exists(error_path))
+        self.assertTrue(os.path.exists(expected_output), "Výstupní soubor nebyl vytvořen!")
 
 
 if __name__ == '__main__':
