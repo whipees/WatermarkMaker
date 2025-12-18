@@ -1,7 +1,7 @@
 import os
 import threading
 from src import config, workers, logger
-
+import time
 
 def ensure_directories():
     """
@@ -35,6 +35,8 @@ def run_app():
     """
     ensure_directories()
 
+    start_time = time.time()
+
     producer_thread = threading.Thread(target=workers.producer)
     producer_thread.start()
 
@@ -63,5 +65,10 @@ def run_app():
 
     for t in all_threads:
         t.join()
+
+    end_time = time.time()
+    duration = end_time - start_time
+
+    logger.logger("SYSTEM", f"Finished in {duration:.2f} seconds")
 
     logger.logger("SYSTEM", "all threads stopped, goodbye")
